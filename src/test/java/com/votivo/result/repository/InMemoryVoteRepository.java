@@ -5,9 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class InMemoryVoteRepository implements VoteRepository {
     private final ConcurrentMap<UUID, VoteSubmission> votes = new ConcurrentHashMap<>();
 
