@@ -20,7 +20,7 @@ class ResultServiceApplicationTests {
     @Test
     void resultOfAPollNoEventWasSeenForHasAStableJsonContract() throws Exception {
         String poll = "11111111-1111-4111-8111-111111111111";
-        mvc.perform(get("/api/v1/polls/" + poll + "/results"))
+        mvc.perform(get("/api/v1/polls/" + poll + "/results").header("X-Internal-Auth", "test-secret"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.pollId").value(poll))
                 .andExpect(jsonPath("$.status").value("UNKNOWN"))
@@ -30,8 +30,17 @@ class ResultServiceApplicationTests {
 
     @Test
     void invalidPollIdIsBadRequest() throws Exception {
-        mvc.perform(get("/api/v1/polls/not-a-uuid/results"))
+        mvc.perform(get("/api/v1/polls/not-a-uuid/results").header("X-Internal-Auth", "test-secret"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void refusesCallsThatDidNotComeThroughTheGateway() throws Exception {
+        String url = "/api/v1/polls/11111111-1111-4111-8111-111111111111/results";
+        mvc.perform(get(url)).andExpect(status().isUnauthorized());
+        mvc.perform(get(url).header("X-Internal-Auth", "guess")).andExpect(status().isUnauthorized());
+        mvc.perform(get(url).header("X-Internal-Auth", "test-secret-and-more")).andExpect(status().isUnauthorized());
+        mvc.perform(get(url).header("X-Internal-Auth", "")).andExpect(status().isUnauthorized());
     }
 
     @Test
