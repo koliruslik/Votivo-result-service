@@ -1,0 +1,39 @@
+server:
+  port: ${SERVER_PORT:8083}
+  shutdown: graceful
+spring:
+  application:
+    name: result-service
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/result_db}
+    username: ${DB_USERNAME:result}
+    password: ${DB_PASSWORD:result}
+  flyway:
+    enabled: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    virtual-host: ${RABBITMQ_VHOST:/}
+    listener:
+      simple:
+        auto-startup: ${RABBITMQ_LISTENERS_ENABLED:true}
+        # A failing message is rejected without requeue, so the queue dead-letters it. The retries that come first
+        # are configured in ListenerRetryConfig (the properties cannot exclude deliberate rejections).
+        default-requeue-rejected: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db

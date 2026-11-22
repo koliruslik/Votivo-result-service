@@ -1,9 +1,9 @@
 # Development notes
 
-ResultController delegates to ResultService. ResultService depends on VoteRepository, with InMemoryVoteRepository as the initial adapter.
+`ResultEventListener` (messaging) turns the broker messages into calls of `ResultService`, which applies each event once together with its event id in one transaction. `ResultRepository` is the storage interface; `JdbcResultRepository` is its PostgreSQL implementation and the only place with SQL.
 
-VoteSubmission contains a vote ID and poll ID. The current result operation counts submissions for the requested poll. The repository starts empty; there is no HTTP endpoint for adding votes.
+Both consumed queues are independent, so the repository must accept a vote for a poll whose `poll.started` has not been seen: counters are created by whichever event comes first, and `saveStructure` only fills in titles, texts and positions.
 
-This is the laboratory 4 foundation: a runnable application with basic models, layers, and minimal behavior. PostgreSQL, Flyway, RabbitMQ, authentication, detailed aggregation, and cross-service integration are outside this version.
+Unit tests use `InMemoryResultRepository` (a test double with the same rules). The SQL itself is checked by `JdbcResultRepositoryPostgresTest` against a real PostgreSQL (`postgresTest`).
 
 Work on a feature branch inside this submodule. Keep parent-repository pointer changes separate.
