@@ -24,6 +24,9 @@ spring:
         # A failing message is rejected without requeue, so the queue dead-letters it. The retries that come first
         # are configured in ListenerRetryConfig (the properties cannot exclude deliberate rejections).
         default-requeue-rejected: false
+app:
+  # Shared with the gateway; every /api call must carry it in X-Internal-Auth. Required: no default.
+  internal-auth-secret: ${INTERNAL_AUTH_SECRET}
 management:
   endpoints:
     web:

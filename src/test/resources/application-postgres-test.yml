@@ -1,3 +1,5 @@
+app:
+  internal-auth-secret: test-secret
 spring:
   datasource:
     url: ${TEST_DB_URL:jdbc:postgresql://localhost:5432/result_db}
