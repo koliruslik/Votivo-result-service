@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: ${TEST_DB_URL:jdbc:postgresql://localhost:5432/result_db}
+    username: ${TEST_DB_USERNAME:result}
+    password: ${TEST_DB_PASSWORD:result}
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false
