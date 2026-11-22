@@ -33,7 +33,7 @@ Result Service consumes two queues; it declares them, their bindings and their d
 
 Delivery is at least once. The AMQP `message_id` is the event id: it is stored in `processed_events` in the same transaction as the counters, so a redelivered message changes nothing and a failed one is applied exactly once when it comes back. The two queues are independent, so a vote can be processed before `poll.started`; the counters are then created by the vote and the structure fills in later without resetting them.
 
-A message that no retry can fix (no `message_id`, a body that does not decode, an unknown routing key or reason) is rejected without requeue. A failure such as a database outage is retried in the consumer (5 attempts, 1s doubling). In both cases the queue dead-letters the message to `votivo.dlx`, which keeps it in `<queue>.dlq` for inspection. Event bodies are described in [`docs/events.md`](../../../docs/events.md) of the integration repository, [Poll Service](https://github.com/Konnzy/Votivo-poll-service) and [Vote Service](https://github.com/ReilEgor/Votivo-vote-service).
+A message that no retry can fix (no `message_id`, a body that does not decode, an unknown routing key or reason) is rejected without requeue. A failure such as a database outage is retried in the consumer (5 attempts, 1s doubling up to 10s); a rejection on purpose is not retried. In both cases the queue dead-letters the message to `votivo.dlx`, which keeps it in `<queue>.dlq` for inspection. Event bodies are described in [`docs/events.md`](https://github.com/koliruslik/Votivo/blob/main/docs/events.md) of the integration repository, [Poll Service](https://github.com/Konnzy/Votivo-poll-service) and [Vote Service](https://github.com/ReilEgor/Votivo-vote-service).
 
 ## API
 

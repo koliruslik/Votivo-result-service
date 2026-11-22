@@ -21,14 +21,9 @@ spring:
     listener:
       simple:
         auto-startup: ${RABBITMQ_LISTENERS_ENABLED:true}
-        # A failing message is retried in the consumer, then rejected without requeue: the queue dead-letters it.
+        # A failing message is rejected without requeue, so the queue dead-letters it. The retries that come first
+        # are configured in ListenerRetryConfig (the properties cannot exclude deliberate rejections).
         default-requeue-rejected: false
-        retry:
-          enabled: true
-          max-attempts: 5
-          initial-interval: 1s
-          multiplier: 2
-          max-interval: 10s
 management:
   endpoints:
     web:
